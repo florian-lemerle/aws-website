@@ -3,6 +3,11 @@ variable "vpc_name" {
   type        = string 
 }
 
+variable "cidr" {
+  description = "CIDR block"
+  type        = string 
+}
+
 variable "azs" {
   description = "AZs to use for the VPC"
   type        = list
