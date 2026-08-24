@@ -1,3 +1,6 @@
+# -----------------------------------
+# VPC
+# -----------------------------------
 variable "vpc_name" {
   description = "VPC name"
   type        = string
@@ -28,47 +31,56 @@ variable "vpc_tags" {
   type        = map(any)
 }
 
-variable "sg_private_name" {
+# -----------------------------------
+# Database01 security group and rules
+# -----------------------------------
+variable "database01_sg_name" {
   description = "Security group settings"
   type        = string
 }
 
-variable "sg_private_description" {
+variable "database01_sg_description" {
   description = "Description of security group."
   type        = string
 }
 
-variable "sg_private_vpc_name" {
+variable "database01_sg_vpc_name" {
   description = "VPC name of this security group"
   type        = string
 }
 
-variable "sg_private_tags" {
+variable "database01_sg_tags" {
   description = "Tags"
   type        = map(any)
 }
 
-variable "sg_public_name" {
+# -----------------------------------
+# Webserver01 security group and rules
+# -----------------------------------
+variable "webserver01_sg_name" {
   description = "Security group settings"
   type        = string
 }
 
-variable "sg_public_description" {
+variable "webserver01_sg_description" {
   description = "Description of security group."
   type        = string
 }
 
-variable "sg_public_vpc_name" {
+variable "webserver01_sg_vpc_name" {
   description = "VPC name of this security group"
   type        = string
 }
 
-variable "sg_public_tags" {
+variable "webserver01_sg_tags" {
   description = "Tags"
   type        = map(any)
 }
 
-#variable "webserver01_ami" {
+# -----------------------------------
+# Instances
+# -----------------------------------
+#variable "instance_webserver01_ami" {
 #description = "AMI of instance"
 #type = string
 #}

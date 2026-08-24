@@ -25,13 +25,13 @@ module "aws_website" {
   vpc_public_subnets  = var.aws_website_public_subnets
   vpc_tags            = var.aws_website_tags
 
-  sg_private_name        = var.aws_website_sg_private_name
-  sg_private_description = var.aws_website_sg_private_description
-  sg_private_vpc_name    = var.aws_website_vpc_name
-  sg_private_tags        = var.aws_website_sg_private_tags
+  database01_sg_name        = var.aws_website_database01_sg_name
+  database01_sg_description = var.aws_website_database01_sg_description
+  database01_sg_vpc_name    = var.aws_website_vpc_name
+  database01_sg_tags        = var.aws_website_database01_sg_tags
 
-  sg_public_name        = var.aws_website_sg_public_name
-  sg_public_description = var.aws_website_sg_public_description
-  sg_public_vpc_name    = var.aws_website_vpc_name
-  sg_public_tags        = var.aws_website_sg_public_tags
+  webserver01_sg_name        = var.aws_website_webserver01_sg_name
+  webserver01_sg_description = var.aws_website_webserver01_sg_description
+  webserver01_sg_vpc_name    = var.aws_website_vpc_name
+  webserver01_sg_tags        = var.aws_website_webserver01_sg_tags
 }

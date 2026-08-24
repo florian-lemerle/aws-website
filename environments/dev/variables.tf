@@ -1,3 +1,6 @@
+# -----------------------------------
+# VPC
+# -----------------------------------
 variable "aws_website_vpc_name" {
   description = "Name of the VPC"
   type        = string
@@ -28,34 +31,37 @@ variable "aws_website_tags" {
   type        = map(any)
 }
 
-variable "aws_website_sg_private_name" {
+# -----------------------------------
+# Database01 security group and rules
+# -----------------------------------
+variable "aws_website_database01_sg_name" {
   type = string
 }
 
-variable "aws_website_sg_private_description" {
+variable "aws_website_database01_sg_description" {
   type = string
 }
 
-variable "aws_website_sg_private_vpc_name" {
+variable "aws_website_database01_sg_vpc_name" {
   type = string
 }
 
-variable "aws_website_sg_private_tags" {
+variable "aws_website_database01_sg_tags" {
   type = map(any)
 }
 
-variable "aws_website_sg_public_name" {
+variable "aws_website_webserver01_sg_name" {
   type = string
 }
 
-variable "aws_website_sg_public_description" {
+variable "aws_website_webserver01_sg_description" {
   type = string
 }
 
-variable "aws_website_sg_public_vpc_name" {
+variable "aws_website_webserver01_sg_vpc_name" {
   type = string
 }
 
-variable "aws_website_sg_public_tags" {
+variable "aws_website_webserver01_sg_tags" {
   type = map(any)
 }
