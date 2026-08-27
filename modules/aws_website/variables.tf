@@ -1,3 +1,23 @@
+variable "availability_zone_main" {
+  description = "Main availability zone"
+  type = string
+}
+
+variable "ebs_webserver01_vol01_tags" {
+  description = "Tags for the ebs of webserver01"
+  type = map
+}
+
+variable "availability_zone_second" {
+  description = "Secondary availability zone"
+  type = string
+}
+
+variable "ebs_database01_vol01_tags" {
+  description = "Tags for the ebs of database01"
+  type = map
+}
+
 # -----------------------------------
 # VPC
 # -----------------------------------

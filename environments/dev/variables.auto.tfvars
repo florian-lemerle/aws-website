@@ -1,3 +1,6 @@
+availability_zone_main = "eu-west-3a"
+availability_zone_second = "eu-west-3b"
+
 aws_website_vpc_name        = "FL-VPC"
 aws_website_cidr            = "172.16.0.0/16"
 aws_website_azs             = ["eu-west-3a", "eu-west-3b", "eu-west-3c"]
@@ -18,6 +21,9 @@ aws_website_webserver01_sg_tags        = { Name = "AWS Website", Environment = "
 aws_website_key_name = "aws-website"
 aws_website_public_key_path = "/home/shankars/.ssh/aws_website_ed25519.pub"
 aws_website_key_tags = { Name = "AWS Website", Environment = "Dev", ManagedBy = "Terraform"}
+
+aws_website_ebs_database01_vol01_tags = { Name = "database01-vol01", Environment = "Dev", ManagedBy = "Terraform"}
+aws_website_ebs_webserver01_vol01_tags = { Name = "webserver01-vol01", Environment = "Dev", ManagedBy = "Terraform"}
 
 aws_website_webserver01_instance_type = "t3.micro"
 aws_website_webserver01_tags = { Name = "webserver01", Environment = "Dev", ManagedBy = "Terraform"}

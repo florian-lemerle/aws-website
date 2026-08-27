@@ -117,6 +117,35 @@ resource "aws_vpc_security_group_egress_rule" "webserver01_out" {
 }
 
 # -------------------------------------
+# Instance storage
+# --------------------------------------
+resource "aws_ebs_volume" "webserver01_vol01" {
+  availability_zone = var.availability_zone_main
+  size = 30
+
+  tags = var.ebs_webserver01_vol01_tags
+}
+
+resource "aws_volume_attachment" "webserver01_vol01_att" {
+  device_name = "/dev/sdh"
+  volume_id = aws_ebs_volume.webserver01_vol01.id
+  instance_id = aws_instance.webserver01.id
+}
+
+resource "aws_ebs_volume" "database01_vol01" {
+  availability_zone = var.availability_zone_main
+  size = 30
+
+  tags = var.ebs_database01_vol01_tags
+}
+
+resource "aws_volume_attachment" "database01_vol01_att" {
+  device_name = "/dev/sdh"
+  volume_id = aws_ebs_volume.database01_vol01.id
+  instance_id = aws_instance.database01.id
+}
+
+# -------------------------------------
 # Instances & keys
 # --------------------------------------
 resource "aws_key_pair" "this" {
@@ -135,6 +164,7 @@ resource "aws_instance" "webserver01" {
   subnet_id = module.vpc.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.webserver01_sg.id]
   associate_public_ip_address = true
+
 
   tags = var.webserver01_tags
 }

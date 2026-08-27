@@ -1,3 +1,11 @@
+variable "availability_zone_main" {
+  type = string
+}
+
+variable "availability_zone_second" {
+  type = string
+}
+
 # -----------------------------------
 # VPC
 # -----------------------------------
@@ -64,6 +72,17 @@ variable "aws_website_webserver01_sg_vpc_name" {
 
 variable "aws_website_webserver01_sg_tags" {
   type = map(any)
+}
+
+# -----------------------------------
+# Storage
+# -----------------------------------
+variable "aws_website_ebs_webserver01_vol01_tags" {
+  type = map
+}
+
+variable "aws_website_ebs_database01_vol01_tags" {
+  type = map
 }
 
 # -----------------------------------
