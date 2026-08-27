@@ -1,3 +1,19 @@
+data "aws_ami" "this" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
   name   = var.vpc_name
@@ -39,6 +55,14 @@ resource "aws_vpc_security_group_ingress_rule" "database01_sql" {
   referenced_security_group_id = aws_security_group.webserver01_sg.id
 }
 
+resource "aws_vpc_security_group_ingress_rule" "database01_ping" {
+  security_group_id = aws_security_group.database01_sg.id
+  ip_protocol = "icmp"
+  from_port = 8
+  to_port = 0
+  cidr_ipv4 = var.vpc_cidr
+}
+
 resource "aws_vpc_security_group_egress_rule" "database01_out" {
   security_group_id = aws_security_group.database01_sg.id
   ip_protocol = "-1"
@@ -78,6 +102,14 @@ resource "aws_vpc_security_group_ingress_rule" "webserver01_https" {
   to_port           = 443
 }
 
+resource "aws_vpc_security_group_ingress_rule" "webserver01_ping" {
+  security_group_id = aws_security_group.webserver01_sg.id
+  ip_protocol = "icmp"
+  from_port = 8
+  to_port = 0
+  cidr_ipv4 = var.vpc_cidr
+}
+
 resource "aws_vpc_security_group_egress_rule" "webserver01_out" {
   security_group_id = aws_security_group.webserver01_sg.id
   ip_protocol = "-1"
@@ -85,13 +117,36 @@ resource "aws_vpc_security_group_egress_rule" "webserver01_out" {
 }
 
 # -------------------------------------
-# Instances
+# Instances & keys
 # --------------------------------------
-#resource "aws_instance" "webserver01" {
-  #ami = var.instance_webserver01_ami
-  #instance_type = var.instance_webserver01_instance_type
+resource "aws_key_pair" "this" {
+  key_name   = var.key_name
+  public_key = file(var.public_key_path)
 
-  #subnet_id = module.vpc.public_subnets[0]
-  #vpc_security_group_ids = [aws_security_group.webserver01_sg.id]
+  tags = var.key_tags
+}
 
-#}
+resource "aws_instance" "webserver01" {
+  ami = data.aws_ami.this.id
+  instance_type = var.webserver01_instance_type
+  
+  key_name = aws_key_pair.this.key_name
+  
+  subnet_id = module.vpc.public_subnets[0]
+  vpc_security_group_ids = [aws_security_group.webserver01_sg.id]
+  associate_public_ip_address = true
+
+  tags = var.webserver01_tags
+}
+
+resource "aws_instance" "database01" {
+  ami = data.aws_ami.this.id
+  instance_type = var.database01_instance_type
+
+  key_name = aws_key_pair.this.key_name
+
+  subnet_id = module.vpc.private_subnets[0]
+  vpc_security_group_ids = [aws_security_group.database01_sg.id]
+
+  tags = var.database01_tags
+}

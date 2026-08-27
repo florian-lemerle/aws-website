@@ -1,18 +1,3 @@
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
-}
 
 module "aws_website" {
   source = "../../modules/aws_website"
@@ -34,4 +19,14 @@ module "aws_website" {
   webserver01_sg_description = var.aws_website_webserver01_sg_description
   webserver01_sg_vpc_name    = var.aws_website_vpc_name
   webserver01_sg_tags        = var.aws_website_webserver01_sg_tags
+
+  key_name = var.aws_website_key_name
+  public_key_path = var.aws_website_public_key_path
+  key_tags = var.aws_website_key_tags
+
+  webserver01_instance_type = var.aws_website_webserver01_instance_type
+  webserver01_tags = var.aws_website_webserver01_tags
+
+  database01_instance_type = var.aws_website_database01_instance_type
+  database01_tags = var.aws_website_database01_tags
 }

@@ -65,3 +65,41 @@ variable "aws_website_webserver01_sg_vpc_name" {
 variable "aws_website_webserver01_sg_tags" {
   type = map(any)
 }
+
+# -----------------------------------
+# Instances
+# -----------------------------------
+variable "aws_website_key_name" {
+  description = "Name of the key-pair"
+  type = string
+}
+
+variable "aws_website_public_key_path" {
+  description = "Path of the public key file"
+  type = string
+}
+
+variable "aws_website_key_tags" {
+  description = "Tags for the key-pair"
+  type = map
+}
+
+variable "aws_website_webserver01_instance_type" {
+  description = "Instance type of webserver01"
+  type = string
+}
+
+variable "aws_website_webserver01_tags" {
+  description = "Website01 tags"
+  type = map
+}
+
+variable "aws_website_database01_instance_type" {
+  description = "Instance type of database01"
+  type = string
+}
+
+variable "aws_website_database01_tags" {
+  description = "Website01 tags"
+  type = map
+}

@@ -80,17 +80,37 @@ variable "webserver01_sg_tags" {
 # -----------------------------------
 # Instances
 # -----------------------------------
-#variable "instance_webserver01_ami" {
-#description = "AMI of instance"
-#type = string
-#}
+variable "key_name" {
+  description = "Name of the key-pair"
+  type = string
+}
 
-#variable "webserver01_instance_type" {
-#description = "Instance type"
-#type = string
-#}
+variable "public_key_path" {
+  description = "Path of the public key file"
+  type = string
+}
 
-#variable "webserver01_tags" {
-#description = "Tags to apply to the resource"
-#type = map
-#}
+variable "key_tags" {
+  description = "Tags for the key-pair"
+  type = map
+}
+
+variable "webserver01_instance_type" {
+description = "Instance type"
+type = string
+}
+
+variable "webserver01_tags" {
+description = "Tags to apply to the resource"
+type = map
+}
+
+variable "database01_instance_type" {
+description = "Instance type"
+type = string
+}
+
+variable "database01_tags" {
+description = "Tags to apply to the resource"
+type = map
+}
