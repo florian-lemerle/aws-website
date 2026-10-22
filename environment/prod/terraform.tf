@@ -10,7 +10,7 @@ terraform {
     bucket         = "it-journey-tf-states-prod"
     key            = "aws-website-prod/terraform.tfstate"
     region         = "eu-west-3"
-    use_lockfile = true
+    use_lockfile   = true
     encrypt        = true
   }
 }
