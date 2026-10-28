@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "this" {
   bucket = var.s3_bucket_name
+  force_destroy = true
   tags = var.tags
 }
 
@@ -40,6 +41,10 @@ resource "aws_cloudfront_distribution" "this" {
         forward = "none"
       }
     }
+    function_association {
+      event_type = "viewer-request"
+      function_arn = aws_cloudfront_function.append_index.arn
+    }
   viewer_protocol_policy = "redirect-to-https"
   min_ttl = 0
   default_ttl = 3600
@@ -54,6 +59,13 @@ resource "aws_cloudfront_distribution" "this" {
     cloudfront_default_certificate = true
   }
   tags = var.tags 
+}
+
+resource "aws_cloudfront_function" "append_index" {
+  name = "append-index-html"
+  runtime = "cloudfront-js-2.0"
+  comment = "Append index.html after ending slash for hugo content"
+  code = file("${path.module}/function_append_index.js")
 }
 
 resource "aws_s3_bucket_policy" "this" {
