@@ -182,6 +182,6 @@ resource "aws_iam_role" "it_journey_github_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "it_journey_github_role_policy" {
- role = aws_iam_role.it_journey_github_role.name
- policy_arn = aws_iam_policy.github_actions.arn
+  role = aws_iam_role.it_journey_github_role.name
+  policy_arn = aws_iam_policy.github_actions.arn
 }
