@@ -100,7 +100,7 @@ data "aws_iam_policy_document" "github_actions" {
     sid = "AllowCloudFrontInvalidation"
     effect = "Allow"
     actions = ["cloudfront:CreateInvalidation"]
-    resources = ["arn:aws:cloudfront::375259955289:distribution/E3Y70JKYCSVL"]
+    resources = ["arn:aws:cloudfront::375259955289:distribution/${var.cloudfront_distribution_id}"]
   }
   
 }
