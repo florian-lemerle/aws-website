@@ -1,39 +1,13 @@
-data "aws_iam_policy_document" "tf_backend" {
-  statement {
-    sid     = "AllowStateBucketAccess"
-    effect  = "Allow"
-    actions = ["s3:ListBucket"]
-    resources = [
-      "arn:aws:s3:::it-journey-tf-states-${var.environment}"
-    ]
-  }
-  statement {
-    sid     = "AllowStateObjectAccess"
-    effect  = "Allow"
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject"
-    ]
-    resources = [
-      "arn:aws:s3:::it-journey-tf-states-${var.environment}/*"
-    ]
-  }
-
-  statement {
-    sid     = "AllowDynamoDBLocking"
-    effect  = "Allow"
-    actions = [
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:DeleteItem"
-    ]
-    resources = [
-      "arn:aws:dynamodb:*:*:table/it-journey-tf-locks-${var.environment}"
-    ]
-  }
+#------------------------
+# Terraform Users
+#------------------------
+resource "aws_iam_user" "this" {
+  name = "svc_terraform_${var.environment}"
 }
 
+#------------------------
+# Terraform It-journey 
+#------------------------
 data "aws_iam_policy_document" "it_journey" {
   statement {
     sid       = "AllowScopedS3BucketOperations"
@@ -80,6 +54,98 @@ data "aws_iam_policy_document" "it_journey" {
   }
 }
 
+data "aws_iam_policy_document" "terraform_assume_role" {
+  statement {
+    effect = "Allow"
+    actions = [ "sts:AssumeRole" ]
+
+    principals {
+      type = "AWS"
+      identifiers = [resource.aws_iam_user.this.arn]
+
+    }
+  }
+}
+
+resource "aws_iam_policy" "it_journey" {
+  name        = "it-journey-${var.environment}-policy"
+  path        = "/"
+  description = "Policy to allow admin access to s3 bucket and cloudFront for ${var.environment} environement of it-journey"
+  policy = data.aws_iam_policy_document.it_journey.json
+  tags = {
+    Author      = "Florian Le Merle"
+    Managed_by  = "Terraform"
+  }
+}
+
+resource "aws_iam_user_policy_attachment" "it-journey" {
+  user = var.terraform_account_name
+  policy_arn = aws_iam_policy.it_journey.arn
+}
+
+resource "aws_iam_role" "it_journey_terraform" {
+  name = "it-journey-terraform-${var.environment}-role"
+  assume_role_policy = data.aws_iam_policy_document.terraform_assume_role.json
+}
+
+#------------------------
+# Terraform Backend
+#------------------------
+data "aws_iam_policy_document" "tf_backend" {
+  statement {
+    sid     = "AllowStateBucketAccess"
+    effect  = "Allow"
+    actions = ["s3:ListBucket"]
+    resources = [
+      "arn:aws:s3:::it-journey-tf-states-${var.environment}"
+    ]
+  }
+  statement {
+    sid     = "AllowStateObjectAccess"
+    effect  = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+    resources = [
+      "arn:aws:s3:::it-journey-tf-states-${var.environment}/*"
+    ]
+  }
+
+  statement {
+    sid     = "AllowDynamoDBLocking"
+    effect  = "Allow"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem"
+    ]
+    resources = [
+      "arn:aws:dynamodb:*:*:table/it-journey-tf-locks-${var.environment}"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "tf_backend" {
+  name        = "terraform-backend-policy-${var.environment}"
+  description = "IAM policy for Terraform state and locking in ${var.environment}"
+  policy      = data.aws_iam_policy_document.tf_backend.json
+  tags = {
+    Author      = "Florian Le Merle"
+    Managed_by  = "Terraform"
+  }
+}
+
+resource "aws_iam_user_policy_attachment" "tf_backend" {
+  user = var.terraform_account_name
+  policy_arn = aws_iam_policy.tf_backend.arn
+}
+
+
+#------------------------
+# Github Actions
+#------------------------
 data "aws_iam_policy_document" "github_actions" {
   statement {
     sid = "AllowS3BucketAccess"
@@ -105,7 +171,7 @@ data "aws_iam_policy_document" "github_actions" {
   
 }
 
-data "aws_iam_policy_document" "assume_role" {
+data "aws_iam_policy_document" "github_assume_role" {
   statement {
     effect = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -134,27 +200,6 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-resource "aws_iam_policy" "tf_backend" {
-  name        = "terraform-backend-policy-${var.environment}"
-  description = "IAM policy for Terraform state and locking in ${var.environment}"
-  policy      = data.aws_iam_policy_document.tf_backend.json
-  tags = {
-    Author      = "Florian Le Merle"
-    Managed_by  = "Terraform"
-  }
-}
-
-resource "aws_iam_policy" "it_journey" {
-  name        = "it-journey-${var.environment}-policy"
-  path        = "/"
-  description = "Policy to allow admin access to s3 bucket and cloudFront for ${var.environment} environement of it-journey"
-  policy = data.aws_iam_policy_document.it_journey.json
-  tags = {
-    Author      = "Florian Le Merle"
-    Managed_by  = "Terraform"
-  }
-}
-
 resource "aws_iam_policy" "github_actions" {
   name = "it-journey-github-${var.environment}-policy"
   path = "/"
@@ -165,20 +210,9 @@ resource "aws_iam_policy" "github_actions" {
     Managed_by = "Terraform"
   }
 }
-
-resource "aws_iam_user_policy_attachment" "tf_backend" {
-  user = var.terraform_account_name
-  policy_arn = aws_iam_policy.tf_backend.arn
-}
-
-resource "aws_iam_user_policy_attachment" "it-journey" {
-  user = var.terraform_account_name
-  policy_arn = aws_iam_policy.it_journey.arn
-}
-
 resource "aws_iam_role" "it_journey_github_role" {
   name = "it-journey-github-${var.environment}-role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.github_assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "it_journey_github_role_policy" {
