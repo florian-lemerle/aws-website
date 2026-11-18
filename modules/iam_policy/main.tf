@@ -79,7 +79,7 @@ resource "aws_iam_policy" "it_journey" {
 }
 
 resource "aws_iam_user_policy_attachment" "it-journey" {
-  user = var.terraform_account_name
+  user = aws_iam_user.this.name
   policy_arn = aws_iam_policy.it_journey.arn
 }
 
@@ -87,6 +87,17 @@ resource "aws_iam_role" "it_journey_terraform" {
   name = "it-journey-terraform-${var.environment}-role"
   assume_role_policy = data.aws_iam_policy_document.terraform_assume_role.json
 }
+
+resource "aws_iam_role_policy_attachment" "it_journey_terraform" {
+  role = aws_iam_role.it_journey_terraform.name
+  policy_arn = aws_iam_policy.it_journey.arn
+}
+
+resource "aws_iam_role_policy_attachment" "it_journey_terraform_backend" {
+  role = aws_iam_role.it_journey_terraform.name
+  policy_arn = aws_iam_policy.tf_backend.arn
+}
+
 
 #------------------------
 # Terraform Backend
@@ -138,7 +149,7 @@ resource "aws_iam_policy" "tf_backend" {
 }
 
 resource "aws_iam_user_policy_attachment" "tf_backend" {
-  user = var.terraform_account_name
+  user = aws_iam_user.this.name
   policy_arn = aws_iam_policy.tf_backend.arn
 }
 
