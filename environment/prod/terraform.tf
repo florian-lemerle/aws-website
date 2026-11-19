@@ -12,10 +12,19 @@ terraform {
     region         = "eu-west-3"
     use_lockfile   = true
     encrypt        = true
+    profile = "prod"
+    assume_role = {
+      role_arn = "arn:aws:iam::375259955289:role/it-journey-terraform-prod-role"
+      session_name = "terraform-prod"
+    }
   }
 }
 
 provider "aws" {
   region = "eu-west-3"
   profile = "prod"
+  assume_role {
+    role_arn = "arn:aws:iam::375259955289:role/it-journey-terraform-prod-role"
+    session_name = "terraform-prod"
+  }
 }

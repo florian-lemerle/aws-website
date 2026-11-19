@@ -5,6 +5,10 @@ resource "aws_iam_user" "this" {
   name = "svc_terraform_${var.environment}"
 }
 
+resource "aws_iam_access_key" "this" {
+  user = aws_iam_user.this.name
+}
+
 #------------------------
 # Terraform It-journey 
 #------------------------
