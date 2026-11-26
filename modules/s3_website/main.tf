@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "this" {
 }
 
 resource "aws_cloudfront_function" "append_index" {
-  name = "append-index-html"
+  name = "append-index-html-${var.environment}"
   runtime = "cloudfront-js-2.0"
   comment = "Append index.html after ending slash for hugo content"
   code = file("${path.module}/function_append_index.js")

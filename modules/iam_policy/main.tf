@@ -196,7 +196,7 @@ data "aws_iam_policy_document" "github_assume_role" {
       variable = "token.actions.githubusercontent.com:sub"
       values = [
         var.environment == "prod" ?
-        "repo:florian-lemerle@272038517/it-journey@1404512070:ref:refs/heads/prod" :
+        "repo:florian-lemerle@272038517/it-journey@1404512070:ref:refs/heads/main" :
         "repo:florian-lemerle@272038517/it-journey@1404512070:ref:refs/heads/test"
       ]
 
